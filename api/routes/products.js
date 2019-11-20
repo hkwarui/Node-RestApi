@@ -1,7 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const multer = require("multer");
 
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 const Product = require("../models/products");
 
 router.get("/", (req, res, next) => {
@@ -32,7 +43,8 @@ router.get("/", (req, res, next) => {
       });
     });
 });
-router.post("/", (req, res, next) => {
+router.post("/", upload.single("productImage"), (req, res, next) => {
+  console.log(req.file);
   const product = new Product({
     _id: mongoose.Types.ObjectId(),
     name: req.body.name,
@@ -126,7 +138,7 @@ router.delete("/:productId", (req, res, next) => {
         message: "Product deleted",
         request: {
           type: "POST",
-          url:'http://localhost:3000/products',
+          url: "http://localhost:3000/products",
           body: { name: "String", price: "Number" }
         }
       });

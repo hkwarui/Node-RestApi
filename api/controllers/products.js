@@ -33,37 +33,43 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.product_post_one = (req, res, next) => {
-  console.log(req.file);
-  const product = new Product({
-    _id: mongoose.Types.ObjectId(),
-    name: req.body.name,
-    price: req.body.price
-    //productImage: req.file.path
-  });
-  product
-    .save()
-    .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Created Product Succesfully.",
-        createdProduct: {
-          name: result.name,
-          price: result.price,
-          _id: result._id,
-          productImage: result.productImage,
-          result: {
-            type: "GET",
-            url: "http://localhost:3000/products" + result._id
-          }
-        }
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+  if (req.file) {
+    console.log(req.file.path);
+    const product = new Product({
+      _id: mongoose.Types.ObjectId(),
+      name: req.body.name,
+      price: req.body.price,
+      productImage: req.file.path
     });
+    product
+      .save()
+      .then(result => {
+        console.log(result);
+        res.status(201).json({
+          message: "Created Product Succesfully.",
+          createdProduct: {
+            name: result.name,
+            price: result.price,
+            _id: result._id,
+            productImage: result.productImage,
+            result: {
+              type: "GET",
+              url: "http://localhost:3000/products/" + result._id
+            }
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  } else {
+    return res.status(500).json({
+      message: "Please upload a file !"
+    });
+  }
 };
 
 exports.product_get_one = (req, res, next) => {

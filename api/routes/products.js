@@ -6,18 +6,18 @@ const checkAuth = require("../middleware/check-auth");
 
 const productsController = require("../controllers/products");
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(new Error("message: file not saved."), "uploads/");
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
   },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   }
 });
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, false);
-  } else {
     cb(null, true);
+  } else {
+    cb(null, false);
   }
 };
 const upload = multer({
@@ -25,12 +25,13 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
   fileFilter: fileFilter
 });
-const Product = require("../models/products");
+
+//const Product = require("../models/products");
+//const upload = multer({ dest: "uploads/" });
 
 router.get("/", productsController.products_get_all);
 router.post(
   "/",
-  checkAuth,
   upload.single("productImage"),
   productsController.product_post_one
 );

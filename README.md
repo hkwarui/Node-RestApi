@@ -1,0 +1,2 @@
+# Node-RestApi
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9a785207cc2e4c11aec2b0c6b6b1427e)](https://app.codacy.com/manual/hkwarui/Node-RestApi?utm_source=github.com&utm_medium=referral&utm_content=hkwarui/Node-RestApi&utm_campaign=Badge_Grade_Settings)
